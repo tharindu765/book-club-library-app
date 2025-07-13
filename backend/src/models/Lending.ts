@@ -14,12 +14,12 @@ const lendingSchema = new Schema<ILending>(
     bookId: {
       type: Schema.Types.ObjectId,
       ref: 'Book',
-      required: true,
+      required: [true, "Book reference (bookId) is required"],
     },
     readerId: {
       type: Schema.Types.ObjectId,
       ref: 'Reader',
-      required: true,
+      required: [true, "Reader reference (readerId) is required"],
     },
     lendDate: {
       type: Date,
@@ -27,7 +27,7 @@ const lendingSchema = new Schema<ILending>(
     },
     dueDate: {
       type: Date,
-      required: true,
+      required: [true, "Due date is required"],
     },
     returnDate: {
       type: Date,
