@@ -1,8 +1,15 @@
 import { Router } from "express";
-import { createReader } from "../controllers/reader.controller";
+import { createReader, getReaders, getReaderById, updateReader, deleteReader } from "../controllers/reader.controller";
+import { upload } from "../config/multerCloudinary";
 
-const readerRouter = Router()
+const readerRouter = Router();
 
-readerRouter.post("/save",createReader)
+// Create reader WITH photo
+readerRouter.post("/save", upload.single("photo"), createReader);
 
-export default readerRouter
+readerRouter.get("/", getReaders);
+readerRouter.get("/:id", getReaderById);
+readerRouter.put("/:id", updateReader);
+readerRouter.delete("/:id", deleteReader);
+
+export default readerRouter;

@@ -9,6 +9,7 @@ export interface IReader extends Document {
   membershipDate: Date;
   lastActivity: Date;
   notes?: string;
+  photo?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,24 +18,29 @@ const readerSchema: Schema = new Schema<IReader>(
   {
     fullName: {
       type: String,
-      required: true,
+      required: [true, "Full name is required"],
       trim: true,
+      minlength: [3, "Full name must be at least 3 characters"],
+      maxlength: [100, "Full name cannot exceed 100 characters"],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       lowercase: true,
       trim: true,
+      match: [/.+@.+\..+/, "Please enter a valid email address"],
     },
     phone: {
       type: String,
-      required: true,
+      required: [true, "Phone number is required"],
       trim: true,
+      match: [/^[\d+\-() ]{7,20}$/, "Please enter a valid phone number"],
     },
     address: {
       type: String,
-      required: true,
+      required: [true, "Address is required"],
+      trim: true,
     },
     isActive: {
       type: Boolean,
@@ -50,10 +56,15 @@ const readerSchema: Schema = new Schema<IReader>(
     },
     notes: {
       type: String,
+      maxlength: [500, "Notes cannot exceed 500 characters"],
+    },
+    photo: {
+      type: String,
+      required: false,
     },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 

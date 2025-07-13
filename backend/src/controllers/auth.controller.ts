@@ -26,10 +26,26 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new UserModel({ fullName, email, password: hashedPassword, role });
+    // Handle uploaded photo
+    const photo = req.file ? req.file.path : undefined;
+
+    const user = new UserModel({
+      fullName,
+      email,
+      password: hashedPassword,
+      role,
+      photo,
+    });
+
     await user.save();
 
-    res.status(201).json({ _id: user._id, fullName: user.fullName, email: user.email, role: user.role });
+    res.status(201).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      photo: user.photo,
+    });
   } catch (err) {
     next(err);
   }

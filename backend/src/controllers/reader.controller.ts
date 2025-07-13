@@ -5,21 +5,31 @@ import { APIError } from "../errors/ApiError";
 // Create a new reader
 export const createReader = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const reader = new ReaderModel(req.body);
-    await reader.save();
+    const { fullName, email, phone, address, isActive, notes } = req.body;
 
-    if (!reader) {
-      throw new APIError(500, "Reader not saved");
-    }
+    const photo = req.file ? req.file.path : undefined; // Cloudinary returns file.path as URL
+
+    const reader = new ReaderModel({
+      fullName,
+      email,
+      phone,
+      address,
+      isActive,
+      notes,
+      photo,
+    });
+
+    await reader.save();
 
     res.status(201).json({
       message: "Reader created",
-      data: reader
+      data: reader,
     });
   } catch (error) {
     next(error);
   }
 };
+
 
 // Get all readers
 export const getReaders = async (req: Request, res: Response, next: NextFunction) => {
