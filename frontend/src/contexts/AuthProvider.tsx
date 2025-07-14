@@ -18,7 +18,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAccessToken(token)
   }
 
-  const logout = () => setIsLoggedIn(false)
+  const logout = () => {
+    setIsLoggedIn(false)
+    setAccessToken("")
+    localStorage.removeItem("accessToken")
+}
 
   useEffect(() => {
     setHeader(accessToken)
