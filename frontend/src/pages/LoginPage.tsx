@@ -27,15 +27,18 @@ export default function LoginPage() {
         }
         // Sign up logic (you can modify the endpoint as needed)
         const res = await apiClient.post("/auth/signup", { fullName, email, password });
-        login(res.data.accessToken);
+        const { accessToken, user } = res.data;
+        const { _id, fullName: resFullName, email: userEmail, role } = user;
+        login(accessToken, { _id, fullName: resFullName, email: userEmail, role });
         navigate("/dashboard");
-        console.log("Sign up attempted with:", { fullName, email, password });
       } else {
         // Your existing login logic
         const res = await apiClient.post("/auth/login", { email, password });
-        login(res.data.accessToken);
+        const { accessToken, user } = res.data;
+        const { _id, fullName, email: userEmail, role } = user;
+        //console.log(accessToken, { _id, fullName, email: userEmail, role });
+        login(accessToken, { _id, fullName, email: userEmail, role });
         navigate("/dashboard");
-        console.log("Login attempted with:", { email, password });
       }
     } catch (err:any) {
       setErrorMsg(err.response?.data?.message || `${isSignUp ? 'Sign up' : 'Login'} failed`);
