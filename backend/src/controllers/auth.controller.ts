@@ -19,6 +19,10 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   try {
     const { fullName, email, password, role } = req.body;
 
+    if (!req.body.role) {
+        req.body.role = "staff";
+    }
+
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return next(new APIError(409, "Email already in use"));
@@ -26,7 +30,6 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Handle uploaded photo
     const photo = req.file ? req.file.path : undefined;
 
     const user = new UserModel({
@@ -39,12 +42,29 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 
     await user.save();
 
+    // ✅ Generate tokens
+    const accessToken = createAccessToken(user.id.toString());
+    const refreshToken = createRefreshToken(user.id.toString());
+
+    // ✅ Set refresh token cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/api/auth/refresh-token",
+    });
+
+    // ✅ Return with accessToken and user
     res.status(201).json({
-      _id: user._id,
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role,
-      photo: user.photo,
+      accessToken,
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        photo: user.photo,
+      },
     });
   } catch (err) {
     next(err);
