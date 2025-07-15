@@ -41,6 +41,7 @@ export default function LoginPage() {
         navigate("/dashboard");
       }
     } catch (err:any) {
+      console.log(err)
       setErrorMsg(err.response?.data?.message || `${isSignUp ? 'Sign up' : 'Login'} failed`);
     } finally {
       setIsLoading(false);

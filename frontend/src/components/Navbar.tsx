@@ -36,7 +36,10 @@ const Navbar = () => {
     navigate("/dashboard")
   }
 
-  
+  const handleReaders = () => {
+  navigate("/dashboard/readers")
+}
+
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -72,6 +75,13 @@ const Navbar = () => {
                 >
                   Dashboard
                 </button>
+                  <button
+                  onClick={handleReaders}
+                  className='text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors'
+                >
+                  Readers
+                </button>
+
                 <button
                   disabled={isLoading}
                   onClick={handleLogout}
@@ -126,6 +136,15 @@ const Navbar = () => {
                     className='block w-full text-left text-gray-700 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors'
                   >
                     Dashboard
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleReaders()
+                      setIsMenuOpen(false)
+                    }}
+                    className='block w-full text-left text-gray-700 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors'
+                  >
+                    Readers
                   </button>
                   <button
                     disabled={isLoading}

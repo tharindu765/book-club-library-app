@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setAccessToken(result.data.accessToken)
         setIsLoggedIn(true)
         setUser(result.data.user)
+         setHeader(result.data.accessToken);
         const currentPath = window.location.pathname
         if (currentPath === "/login" || currentPath === "/signup" || currentPath === "/") {
           console.log("currentPath", currentPath)
