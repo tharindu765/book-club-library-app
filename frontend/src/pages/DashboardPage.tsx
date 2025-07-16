@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { StatsService } from "../services/statsService";
+import { useNavigate } from "react-router-dom";
 
 type Stats = {
   totalBooks: number;
@@ -10,17 +11,19 @@ type Stats = {
 };
 
 export default function DashboardPage() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const { user } = useAuth()
   const [stats, setStats] = useState<Stats | null>(null);
-  
+  const navigate = useNavigate()
   
 useEffect(() => {
-  StatsService.getDashboardStats()
-    .then(res => setStats(res.data)) 
-    .catch(err => console.error("Stats error:", err));
-}, []);
+  if (isLoggedIn) {
+    StatsService.getDashboardStats()
+      .then(res => setStats(res.data)) 
+      .catch(err => console.error("Stats error:", err));
+  }
+}, [isLoggedIn]);
+
 
   useEffect(() => {
     // Update time every minute
@@ -34,6 +37,16 @@ useEffect(() => {
 
   if (!stats) return <div>Loading...</div>;
 
+  const handleReaders = () => {
+  navigate("/dashboard/readers")
+}
+
+  const handleBooks = () => {
+  navigate("/dashboard/books")
+}
+const handleLending = () => {
+  navigate("/dashboard/lending")
+}
 
   const menuItems = [
     {
@@ -45,7 +58,7 @@ useEffect(() => {
         </svg>
       ),
       color: "from-blue-500 to-blue-600",
-      href: "/books",
+      handleClick: handleBooks,
       stats: stats.totalBooks
     },
     {
@@ -57,7 +70,7 @@ useEffect(() => {
         </svg>
       ),
       color: "from-green-500 to-green-600",
-      href: "/readers",
+      handleClick: handleReaders,
       stats: stats.totalReaders
     },
     {
@@ -69,7 +82,7 @@ useEffect(() => {
         </svg>
       ),
       color: "from-purple-500 to-purple-600",
-      href: "/lendings",
+      handleClick: handleLending,
       stats: stats.activeLendings
     },
     {
@@ -258,7 +271,7 @@ useEffect(() => {
           {menuItems.map((item, index) => (
             <button
               key={index}
-              onClick={() => console.log(`Navigate to ${item.href}`)}
+              onClick={item.handleClick}
               className="group bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <div className="flex items-center justify-between mb-4">
