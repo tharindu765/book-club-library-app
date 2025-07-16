@@ -18,7 +18,7 @@ export interface ReaderFormData {
   phone: string
   address: string
   notes: string
-  photo: string
+  photo?: string | File;
   isActive: boolean
   membershipDate: string
   lastActivity: string

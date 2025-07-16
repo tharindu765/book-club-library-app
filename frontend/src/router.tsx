@@ -3,6 +3,7 @@ import LoginPage from "./pages/LoginPage"
 import Layout from "./pages/Layout"
 import DashboardPage from "./pages/DashboardPage"
 import ReadersPage from "./pages/ReadersPage"
+import BooksPage from "./pages/BooksPage"
 
 
 const router = createBrowserRouter([
@@ -14,6 +15,8 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/dashboard", element: <DashboardPage /> },
        { path: "/dashboard/readers", element: <ReadersPage /> },
+       { path: "/dashboard/books", element: <BooksPage /> },
+       
     ],
   },
 ])

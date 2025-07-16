@@ -1,4 +1,4 @@
-import type { Reader } from "../types/reader"
+import type { Reader } from "../types/Reader"
 import apiClient from "./apiClient"
 
 export const getAllReaders = async (): Promise<Reader[]> => {
@@ -6,15 +6,27 @@ export const getAllReaders = async (): Promise<Reader[]> => {
   return response.data
 }
 
-export const addReader = async (readerData: Omit<Reader, "_id" | "createdAt" | "updatedAt">): Promise<Reader> => {
-  const response = await apiClient.post("/readers/save", readerData)
-  return response.data
-}
+export const addReader = async (readerData: FormData): Promise<Reader> => {
+  const response = await apiClient.post("/readers/save", readerData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data; // Note: access `.data.data`
+};
 
-export const updateReader = async (_id: string, readerData: Partial<Omit<Reader, "_id" | "createdAt" | "updatedAt">>): Promise<Reader> => {
-  const response = await apiClient.put(`/readers/${_id}`, readerData)
-  return response.data
-}
+
+export const updateReader = async (_id: string, readerData: FormData): Promise<Reader> => {
+  const response = await apiClient.put(`/readers/${_id}`, readerData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data; // Note: access `.data.data`);
+
+};
+
+
 
 export const deleteReader = async (_id: string): Promise<void> => {
   await apiClient.delete(`/readers/${_id}`)

@@ -40,6 +40,9 @@ const Navbar = () => {
   navigate("/dashboard/readers")
 }
 
+  const handleBooks = () => {
+  navigate("/dashboard/books")
+}
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -80,6 +83,12 @@ const Navbar = () => {
                   className='text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors'
                 >
                   Readers
+                </button>
+                  <button
+                  onClick={handleBooks}
+                  className='text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors'
+                >
+                  Books
                 </button>
 
                 <button

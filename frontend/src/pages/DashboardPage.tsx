@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
-import Navbar from "../components/Navbar"; // Import the existing Navbar
+
 
 export default function DashboardPage() {
   const { isLoggedIn } = useAuth();
