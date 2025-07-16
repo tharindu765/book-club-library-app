@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { StatsService } from "../services/statsService";
 import { useNavigate } from "react-router-dom";
+import type { Activity, ActivityType } from "../types/Activity";
+import activityServices from "../services/activityServices";
+import { formatDistanceToNow } from "date-fns"; // or any date lib
 
 type Stats = {
   totalBooks: number;
@@ -15,7 +18,18 @@ export default function DashboardPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [stats, setStats] = useState<Stats | null>(null);
   const navigate = useNavigate()
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    activityServices.getRecentActivities()
+      .then(setActivities)
+      .catch((err) => console.error("Error fetching activities:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
   
+
 useEffect(() => {
   if (isLoggedIn) {
     StatsService.getDashboardStats()
@@ -128,6 +142,72 @@ const handleLending = () => {
       </div>
     );
   }
+
+{/*
+function getBgColor(type: ActivityType): string {
+  switch (type) {
+    case "book-added": return "bg-blue-50";
+    case "reader-registered": return "bg-green-50";
+    case "book-returned": return "bg-purple-50";
+  }
+}
+
+function getIconBgColor(type: ActivityType): string {
+  switch (type) {
+    case "book-added": return "bg-blue-100";
+    case "reader-registered": return "bg-green-100";
+    case "book-returned": return "bg-purple-100";
+  }
+}
+
+function getIcon(type: ActivityType) {
+  switch (type) {
+    case "book-added":
+      return (
+        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+      );
+    case "reader-registered":
+      return (
+        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      );
+    case "book-returned":
+      return (
+        <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      );
+  }
+}
+
+function createMessage(activity: Activity): string {
+  const userName = activity.user?.name ?? "A user";
+  const bookTitle = activity.book?.title ?? "a book";
+
+  switch (activity.type) {
+    case "book-added":
+      return `${userName} added the book "${bookTitle}".`;
+
+    case "reader-registered":
+      return `${userName} registered as a reader.`;
+
+    case "book-returned":
+      return `${userName} returned the book "${bookTitle}".`;
+
+    default:
+      return activity.description || "An activity occurred.";
+  }
+}
+
+
+function timeAgo(timestamp: string): string {
+  return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
+}
+*/}
+if (loading) return <p className="text-gray-500">Loading recent activity...</p>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -292,49 +372,27 @@ const handleLending = () => {
           ))}
         </div>
 
-        {/* Recent Activity */}
-        <div className="mt-8">
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h3>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">New book added: "The Great Gatsby"</p>
-                  <p className="text-xs text-gray-600">2 hours ago</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-4 p-4 bg-green-50 rounded-lg">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">New reader registered: Sarah Johnson</p>
-                  <p className="text-xs text-gray-600">5 hours ago</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-4 p-4 bg-purple-50 rounded-lg">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Book returned: "To Kill a Mockingbird"</p>
-                  <p className="text-xs text-gray-600">1 day ago</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* 
+<div className="mt-10">
+  <h2 className="text-xl font-bold text-gray-800 mb-4">Recent Activity</h2>
+  <div className="space-y-4">
+    {activities.map((activity) => (
+      <div
+        key={activity.id}
+        className={`p-4 rounded-xl shadow-sm ${getBgColor(activity.type)} flex items-start space-x-3`}
+      >
+        <div className={`p-2 rounded-full ${getIconBgColor(activity.type)}`}>
+          {getIcon(activity.type)}
         </div>
+        <div>
+          <p className="text-sm font-medium text-gray-800">{createMessage(activity)}</p>
+          <p className="text-xs text-gray-500">{getIconBgColor(activity.type)}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+*/}
       </main>
     </div>
   );

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
-import { Search, User, Mail, Phone, MapPin, Calendar, Activity, Plus, Filter, Edit, Trash2, X, Save, Camera } from "lucide-react"
-import type { Reader, ReaderFormData } from "../types/Reader"
+import { Search, User, Mail, Phone, MapPin, Calendar, Activity, Plus, Filter, Edit, Trash2, X, Save } from "lucide-react"
+
 import {
   getAllReaders,
   addReader,
   updateReader,
   deleteReader
 } from "../services/readerService"
+import activityServices from "../services/activityServices"
+import type { Reader, ReaderFormData } from "../types/reader"
 
 const ReadersPage = () => {
   const [readers, setReaders] = useState<Reader[]>([])
@@ -114,9 +116,13 @@ if (formData.photo) {
       // Update reader (backend should also accept FormData in PUT if needed!)
       await updateReader(editingReader._id, updateReaderData);
     } else {
-      await addReader(updateReaderData);
-    }
+       await addReader(updateReaderData);
 
+      //await activityServices.logActivity(
+        //"reader-registered",
+        //`Added new reader: ${formData.fullName}`,
+    //  );
+    }
     fetchData();
     closeModal();
   } catch (err) {

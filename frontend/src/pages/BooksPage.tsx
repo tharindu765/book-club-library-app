@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { bookService } from "../services/bookService";
 import type { Book } from "../types/ Book";
 import { Search, Plus, Edit, Trash2, X, Save, Book as BookIcon, User, Hash, Calendar, Package } from "lucide-react";
+import activityServices from "../services/activityServices";
 
 export default function BooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -137,6 +138,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       await bookService.update(editingBook._id!, bookFormData);
     } else {
       await bookService.create(bookFormData);
+      //await activityServices.logActivity("book-added", `Added new book: ${formData.title}`);
     }
 
     await loadBooks(); // reload books list

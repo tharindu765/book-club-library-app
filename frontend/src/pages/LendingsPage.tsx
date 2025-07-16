@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Plus, BookOpen, Users, Calendar, CheckCircle, XCircle, Edit2, Trash2, Search, Filter, Bell, AlertTriangle } from "lucide-react";
-import apiClient from "../services/apiClient";
 import type { Lending, LendingFormData } from "../types/lending";
-import type { Reader } from "../types/Reader";
 import { lendingService } from "../services/lendingService";
 import type { Book } from "../types/ Book";
 import { bookService } from "../services/bookService";
 import { getAllReaders } from "../services/readerService";
+import type { Reader } from "../types/reader";
+import apiClient from "../services/apiClient";
 
 // Enhanced form data type to include isActive
 interface EnhancedLendingFormData extends LendingFormData {
@@ -201,6 +201,26 @@ const checkOverdueNotifications = () => {
     return isOverdue ? "Overdue" : "Active";
   };
 
+const handleSendEmail = async (lendingId: string) => {
+  const lending = lendings.find(l => l._id === lendingId);
+  if (!lending) {
+    alert("Lending not found");
+    return;
+  }
+
+  try {
+    await apiClient.post("/send-due-email", {
+      readerId: lending.readerId._id,
+      lendingId: lending._id,
+    });
+
+    alert("Email sent to user!");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    alert("Failed to send email.");
+  }
+};
+
   const overdueCount = lendings.filter(l => !l.isReturned && new Date(l.dueDate) < new Date()).length;
 
   return (
@@ -265,6 +285,12 @@ const checkOverdueNotifications = () => {
               <button onClick={() => dismissNotification(notification.id)}>
                 <XCircle className="text-gray-400 hover:text-red-500" size={18} />
               </button>
+              <button
+                onClick={() => handleSendEmail(notification.id)}
+                className="text-blue-600 hover:text-blue-800 transition-colors text-xs"
+                >
+                Send Email
+                </button>
             </li>
           ))}
         </ul>
