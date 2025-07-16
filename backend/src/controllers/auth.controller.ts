@@ -135,8 +135,17 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
 
       if (!user) return next(new APIError(401, "User not found"));
 
-      const newAccessToken = createAccessToken(userId);
-      res.status(200).json({ accessToken: newAccessToken });
+       const newAccessToken = createAccessToken(userId);
+      res.status(200).json({
+        accessToken: newAccessToken,
+        user: {
+          _id: user._id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+          photo: user.photo,
+        },
+      });
     });
   } catch (err) {
     next(err);

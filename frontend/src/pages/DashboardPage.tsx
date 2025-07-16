@@ -1,18 +1,26 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
+import { StatsService } from "../services/statsService";
 
+type Stats = {
+  totalBooks: number;
+  totalReaders: number;
+  activeLendings: number;
+  overdueLendings: number;
+};
 
 export default function DashboardPage() {
   const { isLoggedIn } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
   const { user } = useAuth()
-  const [stats, setStats] = useState({
-    totalBooks: 1247,
-    totalReaders: 89,
-    activeLendings: 23,
-    overdueLendings: 5
-  });
-
+  const [stats, setStats] = useState<Stats | null>(null);
+  
+  
+useEffect(() => {
+  StatsService.getDashboardStats()
+    .then(res => setStats(res.data)) 
+    .catch(err => console.error("Stats error:", err));
+}, []);
 
   useEffect(() => {
     // Update time every minute
@@ -22,6 +30,10 @@ export default function DashboardPage() {
 
     return () => clearInterval(timer);
   }, []);
+
+
+  if (!stats) return <div>Loading...</div>;
+
 
   const menuItems = [
     {

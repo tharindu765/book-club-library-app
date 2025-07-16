@@ -8,7 +8,7 @@ export interface IBook extends Document {
   description?: string;
   publishedYear: number;
   copiesAvailable: number;
-  coverImage?: string; // URL if using Cloudinary or S3
+  coverImage?: string; 
   createdAt: Date;
   updatedAt: Date;
 }

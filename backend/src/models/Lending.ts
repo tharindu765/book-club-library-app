@@ -5,7 +5,7 @@ export interface ILending extends Document {
   readerId: mongoose.Types.ObjectId;
   lendDate: Date;
   dueDate: Date;
-  returnDate?: Date;
+  returnDate?: Date | null;
   isReturned: boolean;
 }
 

@@ -43,7 +43,9 @@ const Navbar = () => {
   const handleBooks = () => {
   navigate("/dashboard/books")
 }
-
+const handleLending = () => {
+  navigate("/dashboard/lending")
+}
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
@@ -89,6 +91,12 @@ const Navbar = () => {
                   className='text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors'
                 >
                   Books
+                </button>
+                  <button
+                  onClick={handleLending}
+                  className='text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors'
+                >
+                  Lending
                 </button>
 
                 <button
@@ -154,6 +162,24 @@ const Navbar = () => {
                     className='block w-full text-left text-gray-700 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors'
                   >
                     Readers
+                  </button>
+                    <button
+                    onClick={() => {
+                      handleBooks()
+                      setIsMenuOpen(false)
+                    }}
+                    className='block w-full text-left text-gray-700 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors'
+                  >
+                    Readers
+                  </button>
+                    <button
+                    onClick={() => {
+                      handleLending()
+                      setIsMenuOpen(false)
+                    }}
+                    className='block w-full text-left text-gray-700 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium transition-colors'
+                  >
+                    Lending
                   </button>
                   <button
                     disabled={isLoading}

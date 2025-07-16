@@ -86,3 +86,63 @@ export const getLendingByBook = async (req: Request, res: Response, next: NextFu
   }
 };
 
+export const deleteLending = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const lending = await LendingModel.findById(id);
+    if (!lending) throw new APIError(404, "Lending record not found");
+
+    // Update book copies if not returned
+    if (!lending.isReturned) {
+      const book = await BookModel.findById(lending.bookId);
+      if (book) {
+        book.copiesAvailable += 1;
+        await book.save();
+      }
+    }
+
+    await LendingModel.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Lending record deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+export const updateLending = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { dueDate, readerId, isReturned } = req.body;
+
+    const lending = await LendingModel.findById(id);
+    if (!lending) throw new APIError(404, "Lending record not found");
+
+    if (dueDate) lending.dueDate = dueDate;
+    if (readerId) lending.readerId = readerId;
+
+    if (typeof isReturned === "boolean") {
+      lending.isReturned = isReturned;
+
+      if (isReturned) {
+        // Mark as returned — set returnDate if not set
+        if (!lending.returnDate) {
+          lending.returnDate = new Date();
+        }
+      } else {
+        // Mark as not returned — clear returnDate
+        lending.returnDate = null; // (make sure your type allows null)
+      }
+    }
+
+    await lending.save();
+
+    res.status(200).json({ message: "Lending record updated successfully", data: lending });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+

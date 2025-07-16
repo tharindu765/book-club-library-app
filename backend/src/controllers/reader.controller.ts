@@ -70,21 +70,38 @@ export const deleteReader = async (req: Request, res: Response, next: NextFuncti
 // Update a reader by ID
 export const updateReader = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const reader = await ReaderModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true
-      }
-    );
+    const { fullName, email, phone, address, isActive, notes } = req.body;
 
-    if (!reader) {
-      throw new APIError(404, "Reader not found");
+    let updateData: any = {
+      fullName,
+      email,
+      phone,
+      address,
+      isActive,
+      notes,
+    };
+
+    if (req.file) {
+      updateData.photo = req.file.path;
+    } else if (typeof req.body.photo === 'string' && req.body.photo.trim() !== '') {
+      updateData.photo = req.body.photo; // if provided explicitly
+    } else {
+      // If photo should be removed
+      updateData.$unset = { photo: "" };
     }
 
-    res.status(200).json({ message: "Reader updated", data: reader });
+    const updatedReader = await ReaderModel.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Reader updated",
+      data: updatedReader,
+    });
   } catch (error) {
     next(error);
   }
 };
+

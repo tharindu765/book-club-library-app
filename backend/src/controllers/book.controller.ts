@@ -37,21 +37,48 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
 
 export const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const updates = { ...req.body };
+    const { title, author, isbn, category, description, publishedYear, copiesAvailable } = req.body;
+
+    let updateData: any = {
+      title,
+      author,
+      isbn,
+      category,
+      description,
+      publishedYear,
+      copiesAvailable,
+    };
+
     if (req.file) {
-      updates.coverImage = req.file.path;
+      // New cover image uploaded
+      updateData.coverImage = req.file.path;
+    } else if (typeof req.body.coverImage === 'string' && req.body.coverImage.trim() !== '') {
+      // If a coverImage URL string is explicitly provided, keep it
+      updateData.coverImage = req.body.coverImage;
+    } else {
+      // Remove coverImage field if not provided (unset it)
+      updateData.$unset = { coverImage: "" };
     }
 
-    const book = await BookModel.findByIdAndUpdate(req.params.id, updates, {
-      new: true,
-      runValidators: true,
+    const updatedBook = await BookModel.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedBook) {
+      throw new APIError(404, "Book not found");
+    }
+
+    res.status(200).json({
+      message: "Book updated",
+      data: updatedBook,
     });
-
-    if (!book) throw new APIError(404, "Book not found");
-
-    res.status(200).json({ message: "Book updated", data: book });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 

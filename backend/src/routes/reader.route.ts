@@ -10,7 +10,7 @@ readerRouter.post("/save", upload.single("photo"), createReader);
 
 readerRouter.get("/",authenticateToken, getReaders);
 readerRouter.get("/:id", getReaderById);
-readerRouter.put("/:id", updateReader);
+readerRouter.put("/:id", upload.single("photo"), updateReader);
 readerRouter.delete("/:id", deleteReader);
 
 export default readerRouter;

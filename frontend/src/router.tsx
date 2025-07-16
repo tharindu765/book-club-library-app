@@ -4,6 +4,7 @@ import Layout from "./pages/Layout"
 import DashboardPage from "./pages/DashboardPage"
 import ReadersPage from "./pages/ReadersPage"
 import BooksPage from "./pages/BooksPage"
+import LendingPage from "./pages/LendingsPage"
 
 
 const router = createBrowserRouter([
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <DashboardPage /> },
        { path: "/dashboard/readers", element: <ReadersPage /> },
        { path: "/dashboard/books", element: <BooksPage /> },
+       { path: "/dashboard/lending", element: <LendingPage /> },
        
     ],
   },
