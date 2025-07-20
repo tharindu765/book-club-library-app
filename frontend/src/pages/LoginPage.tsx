@@ -13,10 +13,54 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth()
   const navigate = useNavigate(); 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const isFormValid = isSignUp
+  ? fullName.trim() &&
+    emailRegex.test(email) &&
+    password.trim() &&
+    confirmPassword.trim() &&
+    password === confirmPassword
+  : emailRegex.test(email) && password.trim();
+
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     setErrorMsg("");
     setIsLoading(true);
+setErrorMsg("");
+
+
+if (!email.trim()) {
+  setErrorMsg("Email is required.");
+  return;
+}
+
+if (!emailRegex.test(email)) {
+  setErrorMsg("Please enter a valid email address.");
+  return;
+}
+
+if (!password.trim()) {
+  setErrorMsg("Password is required.");
+  return;
+}
+
+if (isSignUp) {
+  if (!fullName.trim()) {
+    setErrorMsg("Full name is required.");
+    return;
+  }
+
+  if (!confirmPassword.trim()) {
+    setErrorMsg("Please confirm your password.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setErrorMsg("Passwords don't match.");
+    return;
+  }
+}
 
     try {
       if (isSignUp) {
@@ -175,7 +219,7 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !isFormValid}
               onClick={handleSubmit}
               className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >

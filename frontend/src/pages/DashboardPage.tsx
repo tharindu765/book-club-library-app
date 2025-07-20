@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { StatsService } from "../services/statsService";
 import { useNavigate } from "react-router-dom";
-//import type { Activity, ActivityType } from "../types/Activity";
-///import activityServices from "../services/activityServices";
-//import { formatDistanceToNow } from "date-fns"; // or any date lib
+import type { Activity, ActivityType } from "../types/Activity";
+import activityServices from "../services/activityServices";
+import { formatDistanceToNow } from "date-fns"; // or any date lib
 
 type Stats = {
   totalBooks: number;
@@ -18,15 +18,15 @@ export default function DashboardPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [stats, setStats] = useState<Stats | null>(null);
   const navigate = useNavigate()
-  //const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  ///useEffect(() => {
-   // activityServices.getRecentActivities()
-     // .then(setActivities)
-      //.catch((err) => console.error("Error fetching activities:", err))
-     //// .finally(() => setLoading(false));
-  //}, []);
+  useEffect(() => {
+    activityServices.getRecentActivities()
+      .then(setActivities)
+      .catch((err) => console.error("Error fetching activities:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   
 
@@ -48,10 +48,11 @@ useEffect(() => {
     return () => clearInterval(timer);
   }, []);
 
-const handleBackToLogin = () => {
+ const handleBackToLogin = () => {
     navigate('/login')
   }
-  if (!stats) return  <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+  
+  if (!stats) return <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="flex flex-col items-center space-y-6">
           {/* Modern Loading Spinner */}
           <div className="relative">
@@ -74,7 +75,8 @@ const handleBackToLogin = () => {
           </button>
         </div>
       </div>;
-
+  
+ 
   const handleReaders = () => {
   navigate("/dashboard/readers")
 }
@@ -137,7 +139,7 @@ const handleLending = () => {
     }
   ];
 
-  const formatTime = (date:Date) => {
+  const formatTime = (date:any) => {
     return date.toLocaleTimeString([], { 
       hour: '2-digit', 
       minute: '2-digit',
@@ -145,7 +147,7 @@ const handleLending = () => {
     });
   };
 
-  const formatDate = (date:Date) => {
+  const formatDate = (date:any) => {
     return date.toLocaleDateString([], { 
       weekday: 'long',
       year: 'numeric', 
