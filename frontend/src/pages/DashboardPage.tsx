@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { StatsService } from "../services/statsService";
 import { useNavigate } from "react-router-dom";
-import type { Activity, ActivityType } from "../types/Activity";
-import activityServices from "../services/activityServices";
-import { formatDistanceToNow } from "date-fns"; // or any date lib
+//import type { Activity, ActivityType } from "../types/Activity";
+///import activityServices from "../services/activityServices";
+//import { formatDistanceToNow } from "date-fns"; // or any date lib
 
 type Stats = {
   totalBooks: number;
@@ -18,15 +18,15 @@ export default function DashboardPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [stats, setStats] = useState<Stats | null>(null);
   const navigate = useNavigate()
-  const [activities, setActivities] = useState<Activity[]>([]);
+  //const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    activityServices.getRecentActivities()
-      .then(setActivities)
-      .catch((err) => console.error("Error fetching activities:", err))
-      .finally(() => setLoading(false));
-  }, []);
+  ///useEffect(() => {
+   // activityServices.getRecentActivities()
+     // .then(setActivities)
+      //.catch((err) => console.error("Error fetching activities:", err))
+     //// .finally(() => setLoading(false));
+  //}, []);
 
   
 
@@ -48,8 +48,32 @@ useEffect(() => {
     return () => clearInterval(timer);
   }, []);
 
+const handleBackToLogin = () => {
+    navigate('/login')
+  }
+  if (!stats) return  <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="flex flex-col items-center space-y-6">
+          {/* Modern Loading Spinner */}
+          <div className="relative">
+            <div className="w-12 h-12 border-4 border-gray-200 rounded-full animate-spin border-t-blue-500"></div>
+            <div className="absolute inset-0 w-12 h-12 border-4 border-transparent rounded-full animate-pulse border-t-blue-300 opacity-75"></div>
+          </div>
+          
+          {/* Loading Text */}
+          <div className="text-center">
+            <p className="text-gray-600 font-medium mb-2">Authenticating...</p>
+            <p className="text-gray-400 text-sm">Please wait while we verify your credentials</p>
+          </div>
 
-  if (!stats) return <div>Loading...</div>;
+          {/* Back to Login Button */}
+          <button
+            onClick={handleBackToLogin}
+            className="px-6 py-2 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20"
+          >
+            Back to Login
+          </button>
+        </div>
+      </div>;
 
   const handleReaders = () => {
   navigate("/dashboard/readers")
@@ -113,7 +137,7 @@ const handleLending = () => {
     }
   ];
 
-  const formatTime = (date:any) => {
+  const formatTime = (date:Date) => {
     return date.toLocaleTimeString([], { 
       hour: '2-digit', 
       minute: '2-digit',
@@ -121,7 +145,7 @@ const handleLending = () => {
     });
   };
 
-  const formatDate = (date:any) => {
+  const formatDate = (date:Date) => {
     return date.toLocaleDateString([], { 
       weekday: 'long',
       year: 'numeric', 

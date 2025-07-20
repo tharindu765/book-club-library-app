@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar"
 const Layout = () => {
   const { isAuthenticating } = useAuth()
 
-  if(isAuthenticating) return <div>Loading...</div>
+  if(isAuthenticating) return <div>Loading</div>
 
   return (
     <div className='h-screen'>
