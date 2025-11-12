@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { StatsService } from "../services/statsService";
 import { useNavigate } from "react-router-dom";
-import type { Activity } from "../types/Activity";
 import activityServices from "../services/activityServices";
 
 
@@ -18,12 +17,10 @@ export default function DashboardPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [stats, setStats] = useState<Stats | null>(null);
   const navigate = useNavigate()
-  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     activityServices.getRecentActivities()
-      .then(setActivities)
       .catch((err) => console.error("Error fetching activities:", err))
       .finally(() => setLoading(false));
   }, []);
