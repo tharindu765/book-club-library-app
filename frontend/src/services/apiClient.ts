@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios"
 
-export const BASE_URL = "http://localhost:3000/api"
+export const BASE_URL = "https://book-club-library-app.vercel.app/api"
 
 const apiClient = axios.create({
   baseURL: BASE_URL,

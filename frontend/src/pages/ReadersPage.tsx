@@ -7,7 +7,6 @@ import {
   updateReader,
   deleteReader
 } from "../services/readerService"
-import activityServices from "../services/activityServices"
 import type { Reader, ReaderFormData } from "../types/reader"
 
 const ReadersPage = () => {

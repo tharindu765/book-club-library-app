@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { StatsService } from "../services/statsService";
 import { useNavigate } from "react-router-dom";
-import type { Activity, ActivityType } from "../types/Activity";
+import type { Activity } from "../types/Activity";
 import activityServices from "../services/activityServices";
-import { formatDistanceToNow } from "date-fns"; // or any date lib
+
 
 type Stats = {
   totalBooks: number;
